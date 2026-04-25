@@ -3,6 +3,7 @@
     "name": "pinoyflix",
     "slug": "pinoyflix",
     "version": "1.0.0",
+    "scheme": "pinoyflix",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -31,7 +32,7 @@
     "plugins": [
       "expo-router"
     ]
-  },
-    "scheme": "pinoyflix"
+  }
 }
+
 
