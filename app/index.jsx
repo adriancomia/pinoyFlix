@@ -198,11 +198,10 @@ const styles = StyleSheet.create({
   // Hero
   hero: { width, height: height * 0.62, position: 'relative' },
   heroImage: { width: '100%', height: '100%' },
-  heroOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    background: 'linear-gradient(to bottom, transparent 30%, #0a0a0f 100%)',
-    backgroundColor: 'rgba(10,10,15,0.35)',
-  },
+heroOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(10,10,15,0.35)',
+},
   heroContent: {
     position: 'absolute', bottom: 48, left: SPACING.lg, right: SPACING.lg,
   },
