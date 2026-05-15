@@ -1,22 +1,25 @@
 export const COLORS = {
-  background: '#0a0a0f',
-  surface: '#13131a',
-  surfaceLight: '#1e1e2e',
+  background: '#141414',
+  surface: '#1f1f1f',
+  surfaceLight: '#2a2a2a',
+  surfaceHover: '#333333',
   primary: '#e50914',
-  primaryDark: '#b20710',
+  primaryHover: '#f40612',
   accent: '#f5a623',
   text: '#ffffff',
-  textSecondary: '#a0a0b0',
-  textMuted: '#5a5a72',
-  border: '#2a2a3a',
-  success: '#22c55e',
+  textSecondary: '#b3b3b3',
+  textMuted: '#6d6d6d',
+  border: '#333333',
+  success: '#46d369',
   overlay: 'rgba(0,0,0,0.7)',
 };
 
 export const FONTS = {
   regular: 400,
   medium: 500,
+  semibold: 600,
   bold: 700,
+  black: 900,
 };
 
 export const SPACING = {
@@ -26,9 +29,11 @@ export const SPACING = {
   lg: 24,
   xl: 32,
   xxl: 48,
+  xxxl: 64,
 };
 
 export const RADIUS = {
+  xs: 3,
   sm: 6,
   md: 10,
   lg: 16,

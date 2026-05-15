@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { COLORS, SPACING, RADIUS } from '../constants/theme';
 import { useAuth } from '../context/AuthContext';
@@ -7,16 +8,25 @@ const { width } = Dimensions.get('window');
 const isWeb = width > 768;
 
 const NAV_ITEMS = [
-  { label: 'Home', icon: '🏠', path: '/' },
-  { label: 'Browse', icon: '🔍', path: '/browse' },
-  { label: 'Watchlist', icon: '🔖', path: '/watchlist', authOnly: true },
-  { label: 'Profile', icon: '👤', path: '/profile' },
+  { label: 'Home', path: '/' },
+  { label: 'Movies', path: '/browse' },
+  { label: 'Watchlist', path: '/watchlist', authOnly: true },
+  { label: 'Profile', path: '/profile' },
 ];
 
 export default function NavBar() {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleNav = (item) => {
     if (item.authOnly && !user) {
@@ -26,45 +36,84 @@ export default function NavBar() {
     router.push(item.path);
   };
 
-  if (isWeb) return <WebNav pathname={pathname} onNav={handleNav} user={user} router={router} />;
-  return <MobileNav pathname={pathname} onNav={handleNav} />;
-}
+  const handleSearchSubmit = () => {
+    if (searchText.trim()) {
+      router.push(`/browse?q=${encodeURIComponent(searchText.trim())}`);
+      setSearchText('');
+    }
+  };
 
-function WebNav({ pathname, onNav, user, router }) {
+  if (!isWeb) return <MobileNav pathname={pathname} onNav={handleNav} />;
+
   const isActive = (path) =>
     pathname === path || (path !== '/' && pathname.startsWith(path));
 
   return (
-    <View style={web.bar}>
-      {/* ── Logo → goes to Home ── */}
-      <TouchableOpacity onPress={() => router.push('/')}>
-        <Text style={web.logo}>🎬 PinoyFlix</Text>
+    <View style={[nav.bar, scrolled && nav.barScrolled]}>
+
+      {/* ── Left: Logo ── */}
+      <TouchableOpacity onPress={() => router.push('/')} style={nav.logoWrap}>
+        <Text style={nav.logoIcon}>🎬</Text>
+        <Text style={nav.logoText}>
+          PINOY<Text style={nav.logoDot}>FLIX</Text>
+        </Text>
       </TouchableOpacity>
 
-      <View style={web.links}>
+      {/* ── Center: Nav links ── */}
+      <View style={nav.center}>
         {NAV_ITEMS.map((item) => (
-          <TouchableOpacity key={item.path} onPress={() => onNav(item)} style={web.linkWrap}>
-            <Text style={[web.link, isActive(item.path) && web.linkActive]}>
+          <TouchableOpacity
+            key={item.path}
+            onPress={() => handleNav(item)}
+            style={[nav.linkBtn, isActive(item.path) && nav.linkBtnActive]}
+          >
+            <Text style={[nav.linkText, isActive(item.path) && nav.linkTextActive]}>
               {item.label}
             </Text>
-            {isActive(item.path) && <View style={web.linkUnderline} />}
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* ── Avatar → goes to Profile ── */}
-      <View style={web.right}>
+      {/* ── Right: Search + Bored + Account ── */}
+      <View style={nav.right}>
+        <View style={nav.searchWrap}>
+          <Text style={nav.searchIcon}>🔍</Text>
+          <TextInput
+            style={nav.searchInput}
+            placeholder="Search..."
+            placeholderTextColor={COLORS.textMuted}
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmitEditing={handleSearchSubmit}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={nav.boredBtn}
+          onPress={() => {
+            const randoms = ['Inception', 'One Piece', 'Breaking Bad', 'Spirited Away', 'Interstellar'];
+            const pick = randoms[Math.floor(Math.random() * randoms.length)];
+            router.push(`/browse?q=${encodeURIComponent(pick)}`);
+          }}
+        >
+          <Text style={nav.boredText}>✨ I'm bored...</Text>
+        </TouchableOpacity>
+
         {user ? (
-          <TouchableOpacity onPress={() => router.push('/profile')}>
-            <View style={web.avatarWrap}>
-              <Text style={web.avatarText}>
+          <TouchableOpacity onPress={() => router.push('/profile')} style={nav.accountBtn}>
+            <View style={nav.avatar}>
+              <Text style={nav.avatarText}>
                 {user.displayName?.charAt(0).toUpperCase() || '?'}
               </Text>
             </View>
+            <Text style={nav.accountText}>
+              {user.displayName?.split(' ')[0] || 'Account'}
+            </Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={web.signInBtn} onPress={() => router.push('/(auth)/login')}>
-            <Text style={web.signInText}>Sign In</Text>
+          <TouchableOpacity onPress={() => router.push('/(auth)/login')} style={nav.accountBtn}>
+            <Text style={nav.accountIcon}>👤</Text>
+            <Text style={nav.accountText}>Sign In</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -82,7 +131,9 @@ function MobileNav({ pathname, onNav }) {
         const active = isActive(item.path);
         return (
           <TouchableOpacity key={item.path} style={mob.tab} onPress={() => onNav(item)}>
-            <Text style={[mob.icon, active && mob.iconActive]}>{item.icon}</Text>
+            <Text style={[mob.icon, active && mob.iconActive]}>
+              {item.path === '/' ? '🏠' : item.path === '/browse' ? '🔍' : item.path === '/watchlist' ? '🔖' : '👤'}
+            </Text>
             <Text style={[mob.label, active && mob.labelActive]}>{item.label}</Text>
             {active && <View style={mob.dot} />}
           </TouchableOpacity>
@@ -92,45 +143,143 @@ function MobileNav({ pathname, onNav }) {
   );
 }
 
-const web = StyleSheet.create({
+const nav = StyleSheet.create({
   bar: {
-    flexDirection: 'row', alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+    paddingVertical: 10,
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+    backgroundColor: 'rgba(10,10,15,0.75)',
+    backdropFilter: 'blur(16px)',
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'transparent',
+  },
+  barScrolled: {
     backgroundColor: 'rgba(10,10,15,0.95)',
-    paddingHorizontal: SPACING.xl, paddingVertical: SPACING.md,
-    borderBottomWidth: 0.5, borderBottomColor: COLORS.border,
-    position: 'sticky', top: 0, zIndex: 100,
+    borderBottomColor: '#2a2a3a',
   },
-  logo: { color: COLORS.text, fontSize: 20, fontWeight: '800', marginRight: SPACING.xl },
-  links: { flexDirection: 'row', gap: SPACING.lg, flex: 1 },
-  linkWrap: { alignItems: 'center' },
-  link: { color: COLORS.textSecondary, fontSize: 14, fontWeight: '500', paddingVertical: 4 },
-  linkActive: { color: COLORS.text, fontWeight: '700' },
-  linkUnderline: { height: 2, width: '100%', backgroundColor: COLORS.primary, borderRadius: 2, marginTop: 2 },
-  right: { marginLeft: 'auto' },
-  signInBtn: {
-    backgroundColor: COLORS.primary, paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.xs + 2, borderRadius: RADIUS.full,
+
+  logoWrap: {
+    width: 160,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
-  signInText: { color: '#fff', fontWeight: '700', fontSize: 13 },
-  avatarWrap: {
-    width: 34, height: 34, borderRadius: 17,
-    backgroundColor: COLORS.primary,
+  logoIcon: { fontSize: 20 },
+  logoText: {
+    color: '#fff',
+    fontSize: 17,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  logoDot: { color: '#e50914' },
+
+  center: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  linkBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  linkBtnActive: {
+    backgroundColor: '#e50914',
+  },
+  linkText: {
+    color: '#a0a0b0',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  linkTextActive: {
+    color: '#fff',
+    fontWeight: '700',
+  },
+
+  right: {
+    width: 360,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
+  },
+  searchWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1e1e2e',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderWidth: 0.5,
+    borderColor: '#2a2a3a',
+    gap: 6,
+    width: 150,
+  },
+  searchIcon: { fontSize: 12 },
+  searchInput: {
+    color: '#fff',
+    fontSize: 13,
+    flex: 1,
+    outlineStyle: 'none',
+  },
+  boredBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 0.5,
+    borderColor: '#2a2a3a',
+  },
+  boredText: {
+    color: '#a0a0b0',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  accountBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+    borderWidth: 0.5,
+    borderColor: '#2a2a3a',
+  },
+  accountIcon: { fontSize: 14 },
+  accountText: {
+    color: '#a0a0b0',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  avatar: {
+    width: 26, height: 26, borderRadius: 13,
+    backgroundColor: '#e50914',
     justifyContent: 'center', alignItems: 'center',
   },
-  avatarText: { color: '#fff', fontWeight: '800', fontSize: 15 },
+  avatarText: { color: '#fff', fontWeight: '800', fontSize: 12 },
 });
 
 const mob = StyleSheet.create({
   bar: {
-    flexDirection: 'row', backgroundColor: COLORS.surface,
-    borderTopWidth: 0.5, borderTopColor: COLORS.border,
-    paddingBottom: SPACING.sm, paddingTop: SPACING.sm,
-    position: 'sticky', bottom: 0, zIndex: 100,
+    flexDirection: 'row',
+    backgroundColor: '#13131a',
+    borderTopWidth: 0.5,
+    borderTopColor: '#2a2a3a',
+    paddingBottom: 8,
+    paddingTop: 8,
+    position: 'sticky',
+    bottom: 0,
+    zIndex: 100,
   },
   tab: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 4 },
   icon: { fontSize: 20, marginBottom: 2, opacity: 0.5 },
   iconActive: { opacity: 1 },
-  label: { fontSize: 10, color: COLORS.textMuted, fontWeight: '500' },
-  labelActive: { color: COLORS.primary, fontWeight: '700' },
-  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: COLORS.primary, marginTop: 3 },
+  label: { fontSize: 10, color: '#5a5a72', fontWeight: '500' },
+  labelActive: { color: '#e50914', fontWeight: '700' },
+  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#e50914', marginTop: 3 },
 });

@@ -12,9 +12,10 @@ function SplashScreen({ onDone }) {
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 500, useNativeDriver: true }),
-      Animated.spring(scale, { toValue: 1, friction: 6, useNativeDriver: true }),
+      Animated.timing(opacity, { toValue: 1, duration: 500, useNativeDriver: false }),
+      Animated.spring(scale, { toValue: 1, friction: 6, useNativeDriver: false }),
     ]).start();
+
     const t = setTimeout(onDone, 2200);
     return () => clearTimeout(t);
   }, []);
@@ -34,15 +35,31 @@ function SplashScreen({ onDone }) {
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
 
-  if (!ready) return (
-    <AuthProvider>
-      <SplashScreen onDone={() => setReady(true)} />
-    </AuthProvider>
-  );
+  if (!ready) {
+    return (
+      <AuthProvider>
+        <SplashScreen onDone={() => setReady(true)} />
+      </AuthProvider>
+    );
+  }
 
   return (
     <AuthProvider>
       <StatusBar style="light" />
+
+      {typeof document !== 'undefined' && (
+        <style>{`
+          .logo-hover { transition: transform 0.2s ease; cursor: pointer; }
+          .logo-hover:hover { transform: scale(1.08); }
+          * { box-sizing: border-box; }
+          button, [role="button"], a { cursor: pointer; }
+          ::-webkit-scrollbar { width: 6px; }
+          ::-webkit-scrollbar-track { background: #0a0a0f; }
+          ::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 3px; }
+          ::-webkit-scrollbar-thumb:hover { background: #e50914; }
+        `}</style>
+      )}
+
       <View style={styles.root}>
         <NavBar />
         <View style={styles.content}>
@@ -66,15 +83,20 @@ const styles = StyleSheet.create({
 
 const splash = StyleSheet.create({
   container: {
-    flex: 1, backgroundColor: COLORS.background,
-    justifyContent: 'center', alignItems: 'center',
+    flex: 1,
+    backgroundColor: COLORS.background,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   wrap: { alignItems: 'center', gap: 12 },
   icon: { fontSize: 64 },
   name: { color: COLORS.text, fontSize: 38, fontWeight: '800', letterSpacing: -1 },
   sub: { color: COLORS.textMuted, fontSize: 14 },
   footer: {
-    position: 'absolute', bottom: 40,
-    color: COLORS.textMuted, fontSize: 11, letterSpacing: 1.5,
+    position: 'absolute',
+    bottom: 40,
+    color: COLORS.textMuted,
+    fontSize: 11,
+    letterSpacing: 1.5,
   },
 });
