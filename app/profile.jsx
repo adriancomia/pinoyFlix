@@ -33,7 +33,6 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <View style={s.center}>
-        <Text style={s.lockIcon}>👤</Text>
         <Text style={s.lockTitle}>You're not signed in</Text>
         <Text style={s.lockSub}>Sign in to access your profile, watchlist and history.</Text>
         <TouchableOpacity style={s.btn} onPress={() => router.push('/(auth)/login')}>
