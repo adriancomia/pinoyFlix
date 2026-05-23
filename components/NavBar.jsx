@@ -77,7 +77,7 @@ export default function NavBar() {
       {/* ── Right: Search + Bored + Account ── */}
       <View style={nav.right}>
         <View style={nav.searchWrap}>
-          <Text style={nav.searchIcon}>🔍</Text>
+          <Text style={nav.searchIcon}></Text>
           <TextInput
             style={nav.searchInput}
             placeholder="Search..."
@@ -96,7 +96,7 @@ export default function NavBar() {
             router.push(`/browse?q=${encodeURIComponent(pick)}`);
           }}
         >
-          <Text style={nav.boredText}>✨ I'm bored...</Text>
+          <Text style={nav.boredText}>I'm bored...</Text>
         </TouchableOpacity>
 
         {user ? (
@@ -112,7 +112,7 @@ export default function NavBar() {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={() => router.push('/(auth)/login')} style={nav.accountBtn}>
-            <Text style={nav.accountIcon}>👤</Text>
+            <Text style={nav.accountIcon}></Text>
             <Text style={nav.accountText}>Sign In</Text>
           </TouchableOpacity>
         )}

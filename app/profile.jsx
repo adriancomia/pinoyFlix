@@ -207,6 +207,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: SPACING.xl,
+    maxWidth: 480,        // ← add this
+    alignSelf: 'center',  // ← add this
+    width: '100%',        // ← add this
+
   },
 
   lockIcon: { fontSize: 48, marginBottom: SPACING.md },
@@ -231,6 +235,7 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.sm + 2,
     marginBottom: SPACING.sm,
     width: '100%',
+    maxWidth: 320,
     alignItems: 'center',
   },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
@@ -242,6 +247,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.xl,
     paddingVertical: SPACING.sm + 2,
     width: '100%',
+    maxWidth: 320,   
     alignItems: 'center',
   },
   btnOutlineText: {

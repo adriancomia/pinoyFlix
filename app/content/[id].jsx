@@ -312,6 +312,9 @@ const styles = StyleSheet.create({
 
   main: {
     padding: SPACING.lg,
+    maxWidth: 1100,        // ← add this
+    alignSelf: 'center',  // ← add this
+    width: '100%',        
   },
 
   infoRow: {
@@ -430,6 +433,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: COLORS.border,
     marginBottom: SPACING.lg,
+    maxWidth: 1100,        // ← add
+    width: '100%',        // ← add
+
   },
 
   tabBtn: {
@@ -458,6 +464,9 @@ const styles = StyleSheet.create({
 
   section: {
     paddingBottom: SPACING.xl,
+    maxWidth: 1100,        // ← add
+    width: '100%',        // ← add
+
   },
 
   sectionTitle: {
