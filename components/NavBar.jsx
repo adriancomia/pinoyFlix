@@ -53,7 +53,6 @@ export default function NavBar() {
 
       {/* ── Left: Logo ── */}
       <TouchableOpacity onPress={() => router.push('/')} style={nav.logoWrap}>
-        <Text style={nav.logoIcon}>🎬</Text>
         <Text style={nav.logoText}>
           PINOY<Text style={nav.logoDot}>FLIX</Text>
         </Text>
@@ -166,14 +165,13 @@ const nav = StyleSheet.create({
     width: 160,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
   },
   logoIcon: { fontSize: 20 },
   logoText: {
     color: '#fff',
-    fontSize: 17,
+    fontSize: 27,
     fontWeight: '900',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   logoDot: { color: '#e50914' },
 

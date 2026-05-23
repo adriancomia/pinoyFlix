@@ -65,8 +65,8 @@ export default function ProfileScreen() {
 
         {/* ── Stats ── */}
         <View style={s.stats}>
-          <StatCard label="Watchlist" value={bookmarks.length} icon="🔖" />
-          <StatCard label="Watched" value={history.length} icon="▶️" />
+          <StatCard label="Watchlist" value={bookmarks.length} />
+          <StatCard label="Watched" value={history.length}  />
         </View>
 
         {/* ── Tabs ── */}
@@ -81,7 +81,7 @@ export default function ProfileScreen() {
                 {t === 'overview' ? 'Overview'
                   : t === 'edit' ? 'Edit Profile'
                   : t === 'security' ? 'Security'
-                  : '⚠ Danger Zone'}
+                  : ' Danger Zone'}
               </Text>
               {tab === t && <View style={s.tabUnderline} />}
             </TouchableOpacity>
@@ -106,7 +106,7 @@ function OverviewTab({ bookmarks, history, router, onLogout }) {
       {bookmarks.length > 0 && (
         <View style={s.section}>
           <View style={s.sectionHeader}>
-            <Text style={s.sectionTitle}>🔖 My Watchlist</Text>
+            <Text style={s.sectionTitle}>My Watchlist</Text>
             <TouchableOpacity onPress={() => router.push('/watchlist')}>
               <Text style={s.seeAll}>See all</Text>
             </TouchableOpacity>
@@ -119,7 +119,10 @@ function OverviewTab({ bookmarks, history, router, onLogout }) {
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={s.bookmarkCard}
-                onPress={() => router.push({ pathname: '/content/[id]', params: { id: item.contentId, type: item.type } })}
+                onPress={() => router.push({
+                  pathname: '/content/[id]',
+                  params: { id: item.contentId, type: item.type },
+                })}
               >
                 <Image source={{ uri: item.poster }} style={s.bookmarkPoster} resizeMode="cover" />
                 <Text style={s.bookmarkTitle} numberOfLines={1}>{item.title}</Text>
@@ -130,10 +133,8 @@ function OverviewTab({ bookmarks, history, router, onLogout }) {
       )}
 
       <View style={s.section}>
-        <Text style={s.sectionTitle}>⚙️ Account</Text>
         <View style={s.actionList}>
-          <ActionRow icon="🔖" label="My Watchlist" onPress={() => router.push('/watchlist')} />
-          <ActionRow icon="🚪" label="Sign Out" onPress={onLogout} danger />
+          <ActionRow label="Sign Out" onPress={onLogout} danger />
         </View>
       </View>
     </View>
@@ -329,7 +330,7 @@ function DangerTab({ user, router }) {
   return (
     <View style={s.section}>
       <View style={s.dangerCard}>
-        <Text style={s.dangerTitle}>⚠ Delete Account</Text>
+        <Text style={s.dangerTitle}> Delete Account</Text>
         <Text style={s.dangerSub}>
           This will permanently delete your account, bookmarks, and all data. This cannot be undone.
         </Text>
