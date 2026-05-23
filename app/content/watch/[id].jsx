@@ -141,6 +141,7 @@ export default function WatchScreen() {
       style={styles.container}
       showsVerticalScrollIndicator={false}
     >
+      <View style={styles.pageWrapper}></View>
       <View style={styles.playerWrap}>
         {videoKey ? (
           <View
@@ -345,6 +346,7 @@ export default function WatchScreen() {
           </View>
         )}
       </View>
+      
     </ScrollView>
   );
 }
@@ -403,9 +405,13 @@ const styles = StyleSheet.create({
 
   playerWrap: {
     width: '100%',
+    maxWidth: 1100,
+    alignSelf: 'center',
     backgroundColor: '#000',
+    borderRadius: RADIUS.md,
+    overflow: 'hidden',
+    marginTop: SPACING.lg,
   },
-
   noPlayer: {
     backgroundColor: COLORS.surface,
     justifyContent: 'center',
@@ -426,6 +432,10 @@ const styles = StyleSheet.create({
 
   content: {
     padding: SPACING.lg,
+    maxWidth: 1100,
+    alignSelf: 'center',
+    width: '100%',
+
   },
 
   backBtn: {
