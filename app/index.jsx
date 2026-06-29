@@ -103,9 +103,9 @@ export default function HomeScreen() {
             resizeMode="cover"
           />
 
-          <View style={s.heroGrad1} />
-          <View style={s.heroGrad2} />
-          <View style={s.heroGrad3} />
+            <View style={s.heroGradTop} />
+            <View style={s.heroGradBottom} />
+            <View style={s.heroGradLeft} />
 
           <View style={s.heroContent}>
             <View style={s.heroBadgeRow}>
@@ -524,4 +524,21 @@ const s = StyleSheet.create({
     color: COLORS.textMuted,
     fontSize: 11,
   },
+
+  heroGradTop: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(20,20,20,0.1)',
+},
+heroGradBottom: {
+  position: 'absolute',
+  bottom: 0, left: 0, right: 0,
+  height: '60%',
+  background: 'linear-gradient(to bottom, transparent 0%, rgba(20,20,20,0.5) 50%, rgba(20,20,20,1) 100%)',
+},
+heroGradLeft: {
+  position: 'absolute',
+  left: 0, top: 0, bottom: 0,
+  width: '60%',
+  background: 'linear-gradient(to right, rgba(20,20,20,0.9) 0%, transparent 100%)',
+},
 });

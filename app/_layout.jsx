@@ -23,7 +23,7 @@ function SplashScreen({ onDone }) {
   return (
     <View style={splash.container}>
       <Animated.View style={[splash.wrap, { opacity, transform: [{ scale }] }]}>
-        <Text style={splash.icon}>🎬</Text>
+        <Text style={splash.icon}></Text>
         <Text style={splash.name}>PinoyFlix</Text>
         <Text style={splash.sub}>Stream anything, anytime.</Text>
       </Animated.View>
